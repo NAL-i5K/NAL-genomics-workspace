@@ -110,6 +110,7 @@
     padding-left: 0em;
 }
 
+<<<<<<< HEAD
 d-body {
   margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -126,12 +127,29 @@ d-body {
 .header-a:hover, .header-a:focus { color: #a34900; text-decoration: underline; }
 
 .d-container {
+=======
+body {
+  margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.pull-left {
+    float: left !important;
+}
+a {
+  color: #ef6c00;
+  text-decoration: none;
+}
+.container {
+>>>>>>> jss, css for drupal header
     margin-right: auto;
     margin-left: auto;
     padding-left: 15px;
     padding-right: 15px;
 }
+<<<<<<< HEAD
 
+=======
+.header { width: 100%; float: left; height: 65px; }
+>>>>>>> jss, css for drupal header
 .logo {
     padding-right: 15px;
     padding-top: 9px;

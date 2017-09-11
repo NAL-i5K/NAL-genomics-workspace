@@ -110,10 +110,11 @@
     padding-left: 0em;
 }
 
-d-body {
+
+body {
   margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.d-pull-left {
+.pull-left {
     float: left !important;
 }
 
@@ -136,11 +137,8 @@ d-body {
 .header-a {
   color: #ef6c00;
   text-decoration: none;
-  font-size: 16px
 }
-.header-a:hover, .header-a:focus { color: #a34900; text-decoration: underline; }
-
-.d-container {
+.container {
     margin-right: auto;
     margin-left: auto;
     padding-left: 15px;
@@ -161,14 +159,14 @@ d-body {
 .logo img {
     height: 32px;
 }
-.d-name {
+.name {
       font-size: 14px;
     font-weight: bold;
     padding: 15px 15px;
     line-height: 20px;
     height: 50px;
 }
-.d-name {
+.name {
     font-size: 14px;
     font-weight: bold;
     padding: 15px 15px;
@@ -177,14 +175,14 @@ d-body {
     float: left;
     line-height: 20px;
     height: 50px;
-    width: 350px;
+    width: 335px;
 }
-.d-usda-name {
+.usda-name {
   display: block;
     font-size: 16px;
     color: #4b4b4b;
 }
-.d-site-title {
+.site-title {
     margin-top: 18px;
     font-size: 30px;
     float: right;
@@ -192,7 +190,7 @@ d-body {
     font-weight: bold;
     line-height: 1;
 }
-.d-i5k-login {
+.i5k-login {
     float: right;
     font-size: 16px;
     font-weight: bold;

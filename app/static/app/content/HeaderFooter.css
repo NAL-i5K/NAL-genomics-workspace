@@ -110,28 +110,24 @@
     padding-left: 0em;
 }
 
-d-body {
+
+body {
   margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.d-pull-left {
+.pull-left {
     float: left !important;
 }
-.d-header { width: 100%; float: left; height: 65px; }
-
-.header-a {
+a {
   color: #ef6c00;
   text-decoration: none;
-  font-size: 16px
 }
-.header-a:hover, .header-a:focus { color: #a34900; text-decoration: underline; }
-
-.d-container {
+.container {
     margin-right: auto;
     margin-left: auto;
     padding-left: 15px;
     padding-right: 15px;
 }
-
+.header { width: 100%; float: left; height: 65px; }
 .logo {
     padding-right: 15px;
     padding-top: 9px;
@@ -144,14 +140,14 @@ d-body {
 .logo img {
     height: 32px;
 }
-.d-name {
+.name {
       font-size: 14px;
     font-weight: bold;
     padding: 15px 15px;
     line-height: 20px;
     height: 50px;
 }
-.d-name {
+.name {
     font-size: 14px;
     font-weight: bold;
     padding: 15px 15px;
@@ -160,14 +156,14 @@ d-body {
     float: left;
     line-height: 20px;
     height: 50px;
-    width: 350px;
+    width: 335px;
 }
-.d-usda-name {
+.usda-name {
   display: block;
     font-size: 16px;
     color: #4b4b4b;
 }
-.d-site-title {
+.site-title {
     margin-top: 18px;
     font-size: 30px;
     float: right;
@@ -175,52 +171,14 @@ d-body {
     font-weight: bold;
     line-height: 1;
 }
-.d-i5k-login {
+.i5k-login {
     float: right;
     font-size: 16px;
     font-weight: bold;
 }
 
 /* footer styling */
-.d-body { margin: 0; padding: 0; }
-.d-footer { padding: 15px; background: #2e3a40; color: #dcf3ff; width: 100% !important; text-align: center; font-size: 85%; font-face: "Helvetica Neue",Helvetica,Arial,sans-serif;}
-.footer-a { color: #ef6c00; text-decoration: none; }
-.footer-a:hover, .footer-a:focus { color: #a34900; text-decoration: underline; }
-
-
-.sf-menu .has-sub > a {
-    padding-right: 1.7em;
-}
-.sf-menu .has-sub > a::after {
-    content: '';
-    top: 50%;
-    right: 1em;
-    margin-top: -3px;
-    height: 0;
-    width: 0;
-    border: 5px solid transparent;
-    border-top-color: #ef6c00;
-    position: absolute;
-}
-.sf-menu li ul .has-sub a:after {
-    margin-top: -5px;
-    margin-right: -3px;
-    border-color: transparent;
-    border-left-color: #dFeEFF;
-    border-left-color: #ef6c00;
-}
-a.d-name:hover {
-    text-decoration: none;
-    color: #5e5e5e;
-}
-.d-i5k-login {
-    float: right;
-    font-size: 16px;
-    font-weight: bold;
-    margin: 10px 22px 10px 0px;
-}
-.sf-menu {
-    float: left;
-    margin-bottom: 1em;
-    margin-top: 0px;
-}
+body { margin: 0; padding: 0; }
+footer { padding: 15px; background: #2e3a40; color: #dcf3ff; width: 100% !important; text-align: center; }
+a { color: #ef6c00; text-decoration: none; }
+a:hover, a:focus { color: #a34900; text-decoration: underline; }

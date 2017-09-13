@@ -110,17 +110,17 @@
     padding-left: 0em;
 }
 
-
-body {
+d-body {
   margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.pull-left {
+.d-pull-left {
     float: left !important;
 }
 
 a {
   color: #ef6c00;
   text-decoration: none;
+  font-size: 16px
 }
 .header-a:hover, .header-a:focus { color: #a34900; text-decoration: underline; }
 
@@ -146,8 +146,11 @@ d-body {
     padding-right: 15px;
 }
 
+<<<<<<< HEAD
 .header { width: 100%; float: left; height: 65px; }
 
+=======
+>>>>>>> Adding updates to the css and header footer html files. They pretty closely match the main drupal site now.
 .d-logo {
     padding-right: 15px;
     padding-top: 9px;
@@ -157,17 +160,17 @@ d-body {
     margin-top: 8px;
     margin-bottom: 8px;
 }
-.logo img {
+.d-logo img {
     height: 32px;
 }
-.name {
+.d-name {
       font-size: 14px;
     font-weight: bold;
     padding: 15px 15px;
     line-height: 20px;
     height: 50px;
 }
-.name {
+.d-name {
     font-size: 14px;
     font-weight: bold;
     padding: 15px 15px;
@@ -178,12 +181,12 @@ d-body {
     height: 50px;
     width: 335px;
 }
-.usda-name {
+.d-usda-name {
   display: block;
     font-size: 16px;
     color: #4b4b4b;
 }
-.site-title {
+.d-site-title {
     margin-top: 18px;
     font-size: 30px;
     float: right;
@@ -191,7 +194,7 @@ d-body {
     font-weight: bold;
     line-height: 1;
 }
-.i5k-login {
+.d-i5k-login {
     float: right;
     font-size: 16px;
     font-weight: bold;

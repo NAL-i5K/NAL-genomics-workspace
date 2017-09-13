@@ -110,7 +110,21 @@
     padding-left: 0em;
 }
 
-<<<<<<< HEAD
+d-body {
+  margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.d-pull-left {
+    float: left !important;
+}
+.d-header { width: 100%; float: left; height: 65px; }
+
+.header-a {
+  color: #ef6c00;
+  text-decoration: none;
+  font-size: 16px
+}
+.header-a:hover, .header-a:focus { color: #a34900; text-decoration: underline; }
+
 d-body {
   margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -127,30 +141,15 @@ d-body {
 .header-a:hover, .header-a:focus { color: #a34900; text-decoration: underline; }
 
 .d-container {
-=======
-body {
-  margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-.pull-left {
-    float: left !important;
-}
-a {
-  color: #ef6c00;
-  text-decoration: none;
-}
-.container {
->>>>>>> jss, css for drupal header
     margin-right: auto;
     margin-left: auto;
     padding-left: 15px;
     padding-right: 15px;
 }
-<<<<<<< HEAD
 
-=======
 .header { width: 100%; float: left; height: 65px; }
->>>>>>> jss, css for drupal header
-.logo {
+
+.d-logo {
     padding-right: 15px;
     padding-top: 9px;
     margin-right: 0;
@@ -159,7 +158,7 @@ a {
     margin-top: 8px;
     margin-bottom: 8px;
 }
-.logo img {
+.d-logo img {
     height: 32px;
 }
 .d-name {
@@ -204,7 +203,6 @@ a {
 .d-footer { padding: 15px; background: #2e3a40; color: #dcf3ff; width: 100% !important; text-align: center; font-size: 85%; font-face: "Helvetica Neue",Helvetica,Arial,sans-serif;}
 .footer-a { color: #ef6c00; text-decoration: none; }
 .footer-a:hover, .footer-a:focus { color: #a34900; text-decoration: underline; }
-
 
 .sf-menu .has-sub > a {
     padding-right: 1.7em;

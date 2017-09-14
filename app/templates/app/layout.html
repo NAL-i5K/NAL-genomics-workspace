@@ -12,7 +12,6 @@
     <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700'>
     <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Inconsolata:400,700'>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Tangerine">
-    <script>window.jsErrors=[];window.onerror=function(errorMessage){window.jsErrors[window.jsErrors.length]=errorMessage;}</script>
     {% stylesheet 'app-layout' %}
     <script>window.jsErrors=[];window.onerror=function(errorMessage){window.jsErrors[window.jsErrors.length]=errorMessage;}</script>{% block head-scripts %}{% endblock %}    
     {% if isAnalyticsEnabled %}
@@ -31,11 +30,16 @@
 {% block content-fluid %}
         <div class="container body-content">
 {% block content %}{% endblock %}
+<<<<<<< HEAD
             <hr/>
             <footer>
 	      {% include "app/footer.html" %}
             </footer>
         </div>
+=======
+{% include "app/footer.html" %}
+       </div>
+>>>>>>> resaving my changes after last merge lost them.
 {% endblock %}
     </div>
 

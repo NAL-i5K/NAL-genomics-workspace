@@ -208,6 +208,10 @@ d-body {
 .footer-a { color: #ef6c00; text-decoration: none; }
 .footer-a:hover, .footer-a:focus { color: #a34900; text-decoration: underline; }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Chaitu suggested changes, menus now show arrows.
 .sf-menu .has-sub > a {
     padding-right: 1.7em;
 }
@@ -243,4 +247,8 @@ a.d-name:hover {
     float: left;
     margin-bottom: 1em;
     margin-top: 0px;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> Chaitu suggested changes, menus now show arrows.

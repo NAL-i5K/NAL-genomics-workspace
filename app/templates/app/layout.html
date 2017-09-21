@@ -15,9 +15,6 @@
     {% stylesheet 'app-layout' %}
     <script>window.jsErrors=[];window.onerror=function(errorMessage){window.jsErrors[window.jsErrors.length]=errorMessage;}</script>{% block head-scripts %}{% endblock %}    
     {% if isAnalyticsEnabled %}
-    <style>
-    #django a:hover { color: green; } 
-    </style>
     <script type="text/javascript" src="{% static 'app/scripts/analytics.js' %}" async></script>
     <script type="text/javascript" id="_fed_an_ua_tag" src="https://nal.usda.gov/sites/all/themes/Universal-Federated-Analytics.1.0.js?agency=USDA&subagency=ARS-NAL"></script>
     {% endif%}
@@ -30,16 +27,11 @@
 {% block content-fluid %}
         <div class="container body-content">
 {% block content %}{% endblock %}
-<<<<<<< HEAD
             <hr/>
             <footer>
 	      {% include "app/footer.html" %}
             </footer>
         </div>
-=======
-{% include "app/footer.html" %}
-       </div>
->>>>>>> resaving my changes after last merge lost them.
 {% endblock %}
     </div>
 

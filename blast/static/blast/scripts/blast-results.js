@@ -264,10 +264,15 @@ $(function () { // document ready
                             if (end_pos > row[col_idx['slen']])
                                 end_pos = row[col_idx['slen']];
 
-			    db_url = decodeURI( results_info['db_url'][dbtitle]);
-			    final_url = encodeURI( db_url + '?loc=' + sseqid + ':' + start_pos + '..' + end_pos + '&addStores={"url":{"type":"JBrowse/Store/SeqFeature/GFF3","urlTemplate":"' + /^(https?:\/\/)/g.exec(results_info['db_url'][dbtitle])[1] + /https?:\/\/(.*?)\/(?:blast)+/g.exec(document.URL)[1] + '/media/blast/task/' + task_id + '/' + dbtitle + '.gff"}}&addTracks=[{"label":"BLAST+ Results","category":"0. Reference Assembly","type":"WebApollo/View/Track/DraggableBLASTFeatures","store":"url","style":{"renderClassName":"gray-center-30pct","subfeatureClasses":{"match_part":"blast-match_part"}}}]&tracks=BLAST+ Results');
- 
-			    return '<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="right" data-container="body" title="' + dbtitle + '\nClick to view in genome browser" target="_blank" href="' + final_url  + '" role="button"><span class="glyphicon glyphicon-new-window"></span> ' + results_info['db_organism'][dbtitle] + '</a>';
+                            db_url = decodeURI( results_info['db_url'][dbtitle]);
+
+                            var ver = db_url.match(/nal\.usda\.gov\/apollo/);
+                            if (ver == "nal.usda.gov/apollo"){
+                                final_url = db_url + '?loc=' + sseqid + ':' + start_pos + '..' + end_pos + '&addStore.url.type=JBrowse/Store/SeqFeature/GFF3&addStore.url.urlTemplate=' + /^(https?:\/\/)/g.exec(results_info['db_url'][dbtitle])[1] + /https?:\/\/(.*?)\/(?:blast)+/g.exec(document.URL)[1] + '/media/blast/task/' + task_id + '/' + dbtitle + '.gff&addTracks.url.label=BLAST%20Results&addTracks.url.category=0.%20Reference%20Assembly&addTracks.url.type=WebApollo/View/Track/DraggableBLASTFeatures&addTracks.url.style.renderClassName=gray-center-30pct&addTracks.url.style.subfeatureClasses.match_part=blast-match_part&tracks=BLAST%20Results';
+                            } else {
+                                final_url = encodeURI( db_url + '?loc=' + sseqid + ':' + start_pos + '..' + end_pos + '&addStores={"url":{"type":"JBrowse/Store/SeqFeature/GFF3","urlTemplate":"' + /^(https?:\/\/)/g.exec(results_info['db_url'][dbtitle])[1] + /https?:\/\/(.*?)\/(?:blast)+/g.exec(document.URL)[1] + '/media/blast/task/' + task_id + '/' + dbtitle + '.gff"}}&addTracks=[{"label":"BLAST+ Results","category":"0. Reference Assembly","type":"WebApollo/View/Track/DraggableBLASTFeatures","store":"url","style":{"renderClassName":"gray-center-30pct","subfeatureClasses":{"match_part":"blast-match_part"}}}]&tracks=BLAST+ Results');
+                            }
+                            return '<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="right" data-container="body" title="' + dbtitle + '\nClick to view in genome browser" target="_blank" href="' + final_url  + '" role="button"><span class="glyphicon glyphicon-new-window"></span> ' + results_info['db_organism'][dbtitle] + '</a>';
                         } else {
                             return '<span data-toggle="tooltip" data-placement="right" title="' + dbtitle + '">' + results_info['db_organism'][dbtitle] + '</span>';
                         }
@@ -284,30 +289,7 @@ $(function () { // document ready
                             //>gnl|Drosophila_ficusphila_transcript_v0.5.3|DFIC013799-RA
                             sseqid = /\|([^|]+)$/.exec(sseqid)[1];
                         var idx = meta.row;
-                        //if (idx == 1)
-                        //    console.log('col["render"](' + sseqid + ')');
                         return sseqid;
-//                        return '<span>' + sseqid + '\
-//<button class="btn btn-primary btn-xs btn-fasta pull-right" data-toggle="modal" data-target="#fasta-model-' + idx + '" data-remote="">\
-//    <span class="glyphicon glyphicon-chevron-right"></span> FASTA\
-//</button></span>\
-//<div class="modal fade" id="fasta-model-' + idx + '" tabindex="-1" role="dialog" aria-labelledby="fasta-model-' + idx + '-label" aria-hidden="true">\
-//  <div class="modal-dialog">\
-//    <div class="modal-content">\
-//      <div class="modal-header">\
-//        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>\
-//        <h4 class="modal-title" id="fasta-model-' + idx + '-label">FASTA Sequences</h4>\
-//      </div>\
-//      <div class="modal-body">\
-//        Fetching FASTA Sequence...\
-//      </div>\
-//      <div class="modal-footer">\
-//        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
-//      </div>\
-//    </div>\
-//  </div>\
-//</div>\
-//';
                     }
                     return sseqid;
                 }

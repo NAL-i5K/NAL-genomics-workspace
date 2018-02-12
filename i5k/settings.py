@@ -430,7 +430,7 @@ CELERY_DISABLE_RATE_LIMITS = True
 #CELERY_ENABLE_UTC = True
 
 # Use virtual environment or not
-USE_VIRTUALENV = True
+USE_VIRTUALENV = False
 VIRTUALENV_ROOT = 'virtualenv/py2.7'
 
 USE_CACHE = False
@@ -629,7 +629,7 @@ LOGIN_ENABLED = True
 ANALYTICS_ENABLED = False
 
 # Use settings for production
-USE_PROD_SETTINGS = True
+USE_PROD_SETTINGS = False
 if USE_PROD_SETTINGS:
     from settings_prod import *
 

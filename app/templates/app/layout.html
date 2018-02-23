@@ -20,17 +20,21 @@
 </head>
 
 {% include "app/header.html" %}
-<body  {% block bodyclass %}{% endblock %}">
+<body  {% block bodyclass %}{% endblock %}>
 {% block content-body %}{% endblock %}
     <div class="container-fluid" style="height: 100%;">
 {% block content-fluid %}
         <div class="container body-content">
-{% block content %}{% endblock %}
-{% include "app/footer.html" %}
+{% block content %} {% endblock %}
+<footer>
+  {% include "app/footer.html" %}
+  <p>{{ year|default:"2017" }} - National Agricultural Library</p>
+
+  </footer>
+    </div>
        </div>
 {% endblock %}
     </div>
-
 {% javascript 'app-layout' %}
 {% block scripts %}{% endblock %}
 

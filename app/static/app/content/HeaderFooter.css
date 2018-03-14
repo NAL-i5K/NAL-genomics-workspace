@@ -147,13 +147,9 @@ d-body {
     padding-right: 15px;
 }
 
-<<<<<<< HEAD
 .header { width: 100%; float: left; height: 65px; }
 
 .d-logo {
-=======
-.logo {
->>>>>>> resaving my changes after last merge lost them.
     padding-right: 15px;
     padding-top: 9px;
     margin-right: 0;
@@ -208,10 +204,6 @@ d-body {
 .footer-a { color: #ef6c00; text-decoration: none; }
 .footer-a:hover, .footer-a:focus { color: #a34900; text-decoration: underline; }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> Chaitu suggested changes, menus now show arrows.
 .sf-menu .has-sub > a {
     padding-right: 1.7em;
 }
@@ -247,8 +239,4 @@ a.d-name:hover {
     float: left;
     margin-bottom: 1em;
     margin-top: 0px;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> Chaitu suggested changes, menus now show arrows.

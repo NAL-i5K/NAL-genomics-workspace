@@ -29,12 +29,14 @@
     <div class="container body-content">
       {% block content %}{% endblock %}
       <hr/>
+    </div>
+    {% endblock %}
       <footer>
 	{% include "app/footer.html" %}
       </footer>
-    </div>
-    {% endblock %}
   </div>
+
+
   {% javascript 'app-layout' %}
   {% block scripts %}{% endblock %}
   

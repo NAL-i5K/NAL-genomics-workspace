@@ -358,18 +358,12 @@ PIPELINE = {
         },
         'app-layout': {
             'source_filenames': (
-<<<<<<< HEAD
-                'app/scripts/jquery-1.11.1.min.js',
-                'app/scripts/bootstrap.min.js',
-                'app/scripts/respond.min.js',
                 'app/scripts/superfish.min.js',
                 'app/scripts/hoverIntent.js',
-=======
                 'app/scripts/jquery-1.11.1.js',
                 'app/scripts/bootstrap.js',
                 'app/scripts/respond.src.js',
                 'app/scripts/underscore.js'
->>>>>>> 98dae7352e4b3c61313545560381f5970b253a1d
             ),
             'output_filename': 'app/scripts/app-layout.min.js',
         },

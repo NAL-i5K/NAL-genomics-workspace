@@ -28,25 +28,6 @@ class BlastQueryRecord(models.Model):
         verbose_name = 'BLAST result'
 
 
-class OrganismManager(models.Manager):
-    def get_by_natural_key(self, short_name):
-        return self.get(short_name=short_name)
-
-
-class Organism(models.Model):
-    objects = OrganismManager()
-    display_name = models.CharField(max_length=200, unique=True, help_text='Scientific or common name') # shown to user
-    short_name = models.CharField(max_length=20, unique=True, help_text='This is used for file names and variable names in code') # used in code or filenames
-    description = models.TextField(blank=True) # optional
-    tax_id = models.PositiveIntegerField('NCBI Taxonomy ID', null=True, blank=True, help_text='This is passed into makeblast') # ncbi tax id
-
-    def natural_key(self):
-        return (self.short_name,)
-
-    def __unicode__(self):
-        return self.display_name
-
-
 class SequenceTypeManager(models.Manager):
     def get_by_natural_key(self, dataset_type):
         return self.get(dataset_type=dataset_type)
@@ -108,7 +89,7 @@ class BlastDb(models.Model):
         if not os.path.isfile(self.fasta_file.path_full):
             return 1, 'FASTA file not found', ''
         bin_name = get_bin_name()
-        makeblastdb_path = os.path.join(settings.PROJECT_ROOT, 'blast', bin_name, 'makeblastdb')
+        makeblastdb_path = os.path.join(settings.BASE_DIR, 'blast', bin_name, 'makeblastdb')
         args = [makeblastdb_path, '-in', self.fasta_file.path_full, '-dbtype', self.type.molecule_type, '-hash_index'] # , '-parse_seqids' TODO: make option
         if self.title:
             args += ['-title', self.title]
@@ -212,8 +193,8 @@ class Sequence(models.Model):
 
 
 class JbrowseSetting(models.Model):
-    'Used to link databases to Jbrowse'
-    blast_db = models.OneToOneField(BlastDb, verbose_name='reference', unique=True, help_text='The BLAST database used as the reference in Jbrowse') #
+    '''Used to link databases to Jbrowse'''
+    blast_db = models.OneToOneField(BlastDb, verbose_name='reference', unique=True, help_text='The BLAST database used as the reference in Jbrowse')
     url = models.URLField('Jbrowse URL', unique=True, help_text='The URL to Jbrowse using this reference')
 
     def __unicode__(self):

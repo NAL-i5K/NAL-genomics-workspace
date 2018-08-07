@@ -4,8 +4,9 @@ from celery.task.schedules import crontab
 from celery.decorators import periodic_task
 from subprocess import Popen, PIPE
 from datetime import datetime, timedelta
-from .models import BlastQueryRecord, Sequence, BlastDb, JbrowseSetting
+from blast.models import BlastQueryRecord, Sequence, BlastDb, JbrowseSetting
 from os import path, stat
+from shutil import rmtree
 from pytz import utc
 from itertools import groupby
 from celery.utils.log import get_task_logger
@@ -25,7 +26,8 @@ if settings.USE_CACHE:
     acquire_lock = lambda: cache.add(LOCK_ID, 'true', LOCK_EXPIRE)
     release_lock = lambda: cache.delete(LOCK_ID)
 
-@shared_task() # ignore_result=True
+
+@shared_task()  # ignore_result=True
 def run_blast_task(task_id, args_list, file_prefix, blast_info):
     import django
     django.setup()
@@ -55,10 +57,10 @@ def run_blast_task(task_id, args_list, file_prefix, blast_info):
         result_status = 'NO_ASN'
     elif stat(file_prefix + '.asn')[6] == 0:
         result_status = 'ASN_EMPTY'
-    elif not path.isfile(file_prefix + '.csv'):
-        result_status = 'NO_CSV'
-    elif stat(file_prefix + '.csv')[6] == 0:
-        result_status = 'CSV_EMPTY'
+    elif not path.isfile(file_prefix + '.tsv'):
+        result_status = 'NO_TSV'
+    elif stat(file_prefix + '.tsv')[6] == 0:
+        result_status = 'TSV_EMPTY'
     else:
         # parse .0, and save index in line_num_list
         report_path = file_prefix + '.0'
@@ -70,17 +72,17 @@ def run_blast_task(task_id, args_list, file_prefix, blast_info):
                 if line[:len(target_str)] == target_str:
                     line_num_list.append(line_num)
                 line_num += 1
-        # read csv and convert to appropreate types
-        csv_path = file_prefix + '.csv'
+        # read tsv and convert to appropreate types
+        tsv_path = file_prefix + '.tsv'
         json_path = file_prefix + '.json'
         type_func = {'str': str, 'float': float, 'int': int}
         hsp_list = []
-        with open(csv_path, 'rb') as f:
-            hsp_list = [[type_func[convert](value) for convert, value in zip(blast_info['col_types'], row)] for row in csv.reader(f)]
+        with open(tsv_path, 'rb') as f:
+            hsp_list = [[type_func[convert](value) for convert, value in zip(blast_info['col_types'], row)] for row in csv.reader(f, delimiter='\t')]
         # generate gff3 files
         try:
             blast_program = path.basename(args_list[0][0])
-            basedir = path.dirname(csv_path)
+            basedir = path.dirname(tsv_path)
             gff_col_names = 'seqid source type start end score strand phase attributes'.split()
             # build hsp_dict_list with extra strand info, always let qend > qstart, if not swap both query and subject cords, than set strand
             cid = dict([(v, i) for i, v in enumerate(blast_info['col_names'])])
@@ -89,7 +91,13 @@ def run_blast_task(task_id, args_list, file_prefix, blast_info):
             # build lookup tables from db
             sseqid_db = dict(Sequence.objects.select_related('blastdb').filter(id__in=set([hsp['sseqid'] for hsp in hsp_dict_list])).values_list('id', 'blast_db__title'))
             db_organism = dict(BlastDb.objects.select_related('organism').filter(title__in=set(sseqid_db.values())).values_list('title', 'organism__short_name'))
-            db_url = dict(JbrowseSetting.objects.select_related('blastdb').filter(blast_db__title__in=set(sseqid_db.values())).values_list('blast_db__title', 'url'))
+            if settings.ENABLE_JBROWSE_INTEGRATION:
+                db_url = dict(
+                        JbrowseSetting.objects.select_related('blastdb')
+                        .filter(blast_db__title__in=set(sseqid_db.values()))
+                        .values_list('blast_db__title', 'url'))
+            else:
+                db_url = []
             with open(path.join(basedir, 'info.json'), 'wb') as f:
                 json.dump({'sseqid_db': sseqid_db, 'db_organism': db_organism, 'db_url': db_url, 'line_num_list': line_num_list}, f)
             with open(json_path, 'wb') as f:
@@ -175,17 +183,18 @@ def run_blast_task(task_id, args_list, file_prefix, blast_info):
     with open(path.join(path.dirname(file_prefix), 'status.json'), 'wb') as f:
         json.dump({'status': 'done'}, f)
 
-    return task_id # passed to 'result' argument of task_success_handler
+    return task_id  # passed to 'result' argument of task_success_handler
 
-@periodic_task(run_every=(crontab(hour='0', minute='10'))) # Execute daily at midnight
+
+@periodic_task(run_every=(crontab(hour='0', minute='10')))  # Execute daily at midnight
 def remove_files():
-    from shutil import rmtree
     logger.info('removing expired files (under test, not working actually)')
     for expired_task in BlastQueryRecord.objects.filter(result_date__lt=(datetime.utcnow().replace(tzinfo=utc) + timedelta(days=-7))):
         task_path = path.join(settings.MEDIA_ROOT, 'blast', 'task', expired_task.task_id)
         if path.exists(task_path):
             rmtree(task_path)
             logger.info('removed directory %s' % (task_path))
+
 
 @task_sent.connect
 def task_sent_handler(sender=None, task_id=None, task=None, args=None,
@@ -196,14 +205,17 @@ def task_sent_handler(sender=None, task_id=None, task=None, args=None,
         try:
             tlist = cache.get(CACHE_ID, [])
             if args:
-                bid = args[0] # blast_task_id
-                tlist.append( (task_id,bid) )
+                bid = args[0]  # blast_task_id
+                tlist.append((task_id, bid))
                 logger.info('[task_sent] task sent: %s. queue length: %s' % (bid, len(tlist)) )
                 cache.set(CACHE_ID, tlist)
             else:
                 logger.info('[task_sent] no args. rabbit task_id: %s' % (task_id) )
         finally:
             release_lock()
+    else:
+        logger.info('[task_sent] task sent. rabbit task_id: %s' % (task_id))
+
 
 @task_success.connect
 def task_success_handler(sender=None, result=None, **kwds):
@@ -225,10 +237,13 @@ def task_success_handler(sender=None, result=None, **kwds):
                 logger.info('[task_success] no queue list or blast task id.')
         finally:
             release_lock()
+    else:
+        logger.info('[task_success] task done. rabbit task_id: %s.' % (result))
+
 
 @task_failure.connect
 def task_failure_handler(sender=None, task_id=None, exception=None,
                          args=None, kwargs=None, traceback=None, einfo=None, **kwds):
+    logger.info('[task_failure] task failed. rabbit task_id: %s' % (task_id))
     if settings.USE_CACHE:
-        logger.info('[task_failure] task failed. rabbit task_id: %s' % (task_id) )
         task_success_handler(sender, task_id)

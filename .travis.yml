@@ -31,13 +31,15 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then createuser -s postgres; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew services start rabbitmq; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew services start memcached; fi
-  - sudo pip2 install -r requirements.txt
-  - sudo pip2 install -r dev_requirements.txt
-  - sudo pip2 install coveralls
-  - sudo pip2 install codecov
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://chromedriver.storage.googleapis.com/2.36/chromedriver_mac64.zip; fi
+  - virtualenv -p python2 env
+  - source env/bin/activate
+  - pip2 install -r requirements.txt
+  - pip2 install -r dev_requirements.txt
+  - pip2 install coveralls
+  - pip2 install codecov
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then unzip chromedriver_mac64.zip; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then unzip chromedriver_linux64.zip; fi
   - export PATH=$PATH:$(pwd):/usr/local/sbin
 
@@ -47,14 +49,9 @@ before_script:
   - psql -c 'grant all on database django to django;' -U postgres
   - psql -c 'ALTER USER django CREATEDB;' -U postgres
   - mkdir -p ./media/blast/db/
-  - sudo mkdir /var/log/django
-  - sudo touch /var/log/django/django.log
-  - sudo chmod 666 /var/log/django/django.log
-  - sudo touch /var/log/django/i5k.log
-  - sudo chmod 666 /var/log/django/i5k.log
-  - sudo python2 manage.py migrate
-  - sudo python2 setup.py
-  - sudo python2 manage.py collectstatic --noinput
+  - python2 manage.py migrate
+  - python2 setup.py
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then gem install awesome_bot; fi
 
 # command to run tests
 script:
@@ -73,7 +70,6 @@ script:
   - coverage run --source= ./manage.py test blast.tests.ValidQueryTestCase --noinput
   - coverage run --source= ./manage.py test blast.tests.QueryWithNoHitTestCase --noinput
   - coverage run --source= ./manage.py test blast.tests.UploadFileTestCase --noinput
-  - coverage run --source= ./manage.py test blast.tests.JbrowseLinkOutTestCase --noinput
   - coverage run --source= ./manage.py test hmmer.tests.HmmerAdminTestCase --noinput
   - coverage run --source= ./manage.py test hmmer.tests.LoadSeqExampleTestCase --noinput
   - coverage run --source= ./manage.py test hmmer.tests.LoadAlignExampleTestCase --noinput
@@ -84,7 +80,14 @@ script:
   - coverage run --source= ./manage.py test clustal.tests.ClustalUploadFileTestCase --noinput
   - coverage run --source= ./manage.py test clustal.tests.ClustalBinaryTestCase --noinput
   - coverage run --source= ./manage.py test filebrowser --noinput
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cat i5k/settings.py | sed -r 's/ENABLE_JBROWSE_INTEGRATION = False/ENABLE_JBROWSE_INTEGRATION = True/g;' > i5k/settings2.py; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cat i5k/settings.py | sed -E 's/ENABLE_JBROWSE_INTEGRATION = False/ENABLE_JBROWSE_INTEGRATION = True/g;' > i5k/settings2.py; fi
+  - rm i5k/settings.py
+  - mv i5k/settings2.py i5k/settings.py
+  - coverage run --source= ./manage.py test blast.tests.JbrowseLinkOutTestCase --noinput
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then awesome_bot --allow-redirect --allow-dupe README.md; fi
 
 after_success:
+  - coverage report  # show the coverage report
   - coveralls
   - codecov

@@ -3,6 +3,7 @@ from blast.models import *
 from django.forms import ModelForm
 from suit.widgets import AutosizedTextarea
 from django.contrib import messages
+from django.conf import settings
 
 class BlastQueryRecordAdmin(admin.ModelAdmin):
     list_display = ('task_id', 'enqueue_date', 'dequeue_date', 'result_date', 'result_status', 'user', 'is_shown')
@@ -69,32 +70,6 @@ class BlastDbAdmin(admin.ModelAdmin):
 admin.site.register(BlastDb, BlastDbAdmin)
 
 
-class OrganismForm(ModelForm):
-    class Meta:
-        widgets = {
-            'description': AutosizedTextarea(attrs={'rows': 10, 'class': 'input-xxlarge'}),
-        }
-
-class OrganismAdmin(admin.ModelAdmin):
-    form = OrganismForm
-    list_display = ('display_name', 'short_name', 'tax_id', 'short_description',)
-    search_fields = ('display_name', 'short_name', 'tax_id', 'description',)
-    actions_on_top = True
-    actions_on_bottom = True
-
-    def short_description(self, obj):
-        if len(obj.description) < 100:
-            return obj.description
-        else:
-            return obj.description[:100] + '...'
-    short_description.short_description = 'description'
-    class Media:
-        css = {
-            'all': ('blast/css/organism-admin.css',)
-        }
-        js = ('blast/scripts/organism-admin.js',)
-admin.site.register(Organism, OrganismAdmin)
-
 class SequenceTypeAdmin(admin.ModelAdmin):
     list_display = ('molecule_type', 'dataset_type',)
     search_fields = ('molecule_type', 'dataset_type',)
@@ -122,4 +97,16 @@ class JbrowseSettingAdmin(admin.ModelAdmin):
     list_display = ('blast_db', 'url',)
     actions_on_top = True
     actions_on_bottom = True
+
+    def get_model_perms(self, request):
+        if settings.ENABLE_JBROWSE_INTEGRATION:
+            return {
+                'add': self.has_add_permission(request),
+                'change': self.has_change_permission(request),
+                'delete': self.has_delete_permission(request),
+            }
+        else:
+            return {}
+
+
 admin.site.register(JbrowseSetting, JbrowseSettingAdmin)

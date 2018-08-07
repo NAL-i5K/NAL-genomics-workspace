@@ -4,7 +4,8 @@ import sys
 import os
 import socket
 
-PROJECT_ROOT = path.dirname(path.abspath(path.dirname(__file__)))
+BASE_DIR = path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = path.dirname(os.path.abspath(__file__))
 
 DEBUG = True
 
@@ -15,7 +16,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            path.join(PROJECT_ROOT, 'i5k', 'templates'),
+            path.join(BASE_DIR, 'i5k', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -30,8 +31,6 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
-                'app.context_processors.is_login_enabled',
-                'app.context_processors.is_analytics_enabled',
             ],
         },
     },
@@ -79,7 +78,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = path.join(PROJECT_ROOT, 'media').replace('\\','/')
+MEDIA_ROOT = path.join(BASE_DIR, 'media').replace('\\','/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -90,7 +89,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = path.join(PROJECT_ROOT, 'static').replace('\\','/')
+STATIC_ROOT = path.join(BASE_DIR, 'static').replace('\\','/')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -146,8 +145,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Enable admin documentation:
     'django.contrib.admindocs',
-    'captcha',
-    'dashboard',
     'proxy',
     'hmmer',
     'clustal',
@@ -155,12 +152,13 @@ INSTALLED_APPS = (
 
 
 # filebrowser settings
+FILEBROWSER_DEBUG = False
 FILEBROWSER_SUIT_TEMPLATE = True
 FILEBROWSER_DIRECTORY = ''
 FILEBROWSER_VERSIONS_BASEDIR = '_versions/'
 FILEBROWSER_MAX_UPLOAD_SIZE = 10737418240 # 10GB
 FILEBROWSER_EXTENSIONS = {
-    'Folder': [''],
+    'folder': [''],
     'Document': ['.pdf', '.doc', '.rtf', '.txt', '.xls', '.csv', '.docx'],
     'FASTA': ['.fa', '.faa', '.fna', '.fsa', '.ffn', '.mpfa', '.faa', '.fasta', '.cds', '.pep', '.seq'],
     'FASTQ': ['.fq', '.fastq'],
@@ -188,108 +186,52 @@ FILEBROWSER_VERSIONS = {
     'large': {'verbose_name': 'Large (8 col)', 'width': 680, 'height': '', 'opts': ''},
 }
 
-# Django Suit configuration example
-SUIT_CONFIG = {
-    'ADMIN_NAME': 'i5k Admin',
-    'MENU_OPEN_FIRST_CHILD': False,  # Default True
-    'MENU_EXCLUDE': (),
-    'MENU': (
-        {'app': 'blast', 'label': 'BLAST', 'icon': 'icon-leaf', 'models': (
+# suit settings
+ENABLE_JBROWSE_INTEGRATION = False
+
+if ENABLE_JBROWSE_INTEGRATION:
+    blast_models = (
             {'model': 'blastqueryrecord'},
             {'model': 'sequencetype'},
             {'model': 'blastdb'},
-            {'model': 'jbrowsesetting'},
+            {'model': 'jbrowsesetting'},  # only exsit when ENABLE_JBROWSE_INTEGRATION == True
             {'model': 'sequence'},
-        )},
-        {'app': 'hmmer', 'label': 'Hmmer', 'icon': 'icon-leaf', 'models': (
-            {'model': 'hmmerdb'},
-            {'model': 'hmmerqueryrecord'},
-        )},
-        {'app': 'clustal', 'label': 'clustal', 'icon':'icon-leaf', 'models': (
-            {'model': 'clustalqueryrecord'},
-        )},
-        {'app': 'data', 'label': 'Data', 'icon':'icon-leaf', 'models': (
-            {'model': 'file'},
-            {'model': 'item'},
-            {'model': 'accession'},
-        )},
-        # auth and axes
-        {'label': 'Auth', 'icon': 'icon-lock', 'models': (
-            {'model': 'auth.user'},
-            {'model': 'auth.group'},
-            {'model': 'axes.accessattempt'},
-            {'model': 'axes.accesslog'},
-        )},
-        {'label': 'File Browser', 'icon': 'icon-hdd', 'url': 'fb_browse'},
-    ),
-}
+    )
+else:
+    blast_models = (
+            {'model': 'blastqueryrecord'},
+            {'model': 'sequencetype'},
+            {'model': 'blastdb'},
+            {'model': 'sequence'},
+    )
+suit_menu = (
+    {'app': 'app', 'label': 'Organism', 'icon': 'icon-leaf', 'url': '/admin/app/organism/', 'models': (
+        {'model': 'Organism'},
+    )},
+    {'app': 'blast', 'label': 'BLAST', 'icon': 'icon-leaf', 'models': blast_models},
+    {'app': 'hmmer', 'label': 'Hmmer', 'icon': 'icon-leaf', 'models': (
+        {'model': 'hmmerdb'},
+        {'model': 'hmmerqueryrecord'},
+    )},
+    {'app': 'clustal', 'label': 'clustal', 'icon': 'icon-leaf', 'models': (
+        {'model': 'clustalqueryrecord'},
+    )},
+    # auth and axes
+    {'label': 'Auth', 'icon': 'icon-lock', 'url': '/admin/auth/user/', 'models': (
+        {'model': 'auth.user'},
+        {'model': 'auth.group'},
+        {'model': 'axes.accessattempt'},
+        {'model': 'axes.accesslog'},
+    )},
+    {'label': 'File Browser', 'icon': 'icon-hdd', 'url': 'fb_browse'},
+)
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-
-#
-# Use default 'django' logger to a file in /var/log/django/django.log
-# and new log 'i5k' to /var/log/i5k/i5k.log
-# See logging.md doc for more details.
-#
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'normal': {
-            'format': '%(name)s %(levelname)s %(asctime)s %(process)d [%(message)s] (file: %(pathname)s line: %(lineno)d)'
-        },
-    },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': os.getenv('ADMIN_LOG_LEVEL', 'ERROR'),
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
-            'formatter': 'normal'
-        },
-        'django_file': {
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/var/log/django/django.log',
-            'when': 'midnight',
-            'backupCount': 60,
-            'formatter': 'normal'
-        },
-        'i5k_file': {
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/var/log/django/i5k.log',
-            'when': 'midnight',
-            'backupCount': 60,
-            'formatter': 'normal'
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'filters': ['require_debug_true'],
-            'formatter': 'normal'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['mail_admins', 'django_file', 'console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': True,
-        },
-        'i5k': {
-            'handlers': ['mail_admins', 'i5k_file', 'console'],
-            'level': os.getenv('I5K_LOG_LEVEL', 'INFO'),
-            'propagate': True,
-        },
-    }
+# Django Suit configuration
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'i5k Admin',
+    'MENU_OPEN_FIRST_CHILD': False,
+    'MENU_EXCLUDE': (),
+    'MENU': suit_menu,
 }
 
 # Query maximum limit
@@ -314,7 +256,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_WORKER_DISABLE_RATE_LIMITS = True
-CELERY_RESULT_BACKEND = 'amqp://'
+CELERY_RESULT_BACKEND = 'rpc://'
 
 # Use virtual environment or not
 USE_VIRTUALENV = False
@@ -344,34 +286,39 @@ AXES_VERBOSE = True
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
-    'PAGE_SIZE': 10,
+    ]
 }
 
 # django-pipeline
 PIPELINE = {
-    'STYLESHEETS':{
+    'STYLESHEETS': {
         'app-layout': {
             'source_filenames': (
                 'app/content/site.css',
-                'app/content/bootstrap.min.css',
                 'app/content/HeaderFooter.css',
+                'app/content/bootstrap.css',
             ),
             'output_filename': 'app/content/app-layout.min.css',
+        },
+        'app-readme': {
+            'source_filenames': (
+                'app/content/app-readme.css',
+            ),
+            'output_filename': 'app/content/app-readme.min.css',
         },
         'blast-results': {
             'source_filenames': (
                 'blast/css/codemirror.css',
                 'blast/css/xq-light.css',
                 'blast/css/kendo.common-bootstrap.core.css',
-                'blast/css/kendo.bootstrap.min.css',
-                'blast/css/jquery-ui.min.css',
-                'blast/dataTables/css/jquery.dataTables.min.css',
-                'blast/dataTables/css/dataTables.scroller.min.css',
-                'blast/dataTables/css/dataTables.colReorder.min.css',
+                'blast/css/kendo.bootstrap.css',
+                'blast/css/jquery-ui.css',
+                'blast/dataTables/css/jquery.dataTables.css',
+                'blast/dataTables/css/dataTables.scroller.css',
+                'blast/dataTables/css/dataTables.colReorder.css',
                 'blast/dataTables/css/dataTables.bootstrap.css',
-                'blast/css/bootstrap-select.min.css',
-                'blast/css/bootstrap-switch.min.css',
+                'blast/css/bootstrap-select.css',
+                'blast/css/bootstrap-switch.css',
                 'blast/css/blast-results.css',
                 'app/content/HeaderFooter.css',  
             ),
@@ -395,62 +342,84 @@ PIPELINE = {
             ),
             'output_filename': 'hmmer/css/hmmer-css.min.css',
         },
+        '404-css': {
+            'source_filenames': (
+                'app/css/404.css',
+            ),
+            'output_filename': 'app/css/404-css.min.css',
+        }
     },
     'JAVASCRIPT': {
+        'app-analytics': {
+            'source_filenames': (
+                'app/scripts/analytics.js',
+            ),
+            'output_filename': 'app/scripts/app-analytics.min.js',
+        },
         'app-layout': {
             'source_filenames': (
+<<<<<<< HEAD
                 'app/scripts/jquery-1.11.1.min.js',
                 'app/scripts/bootstrap.min.js',
                 'app/scripts/respond.min.js',
                 'app/scripts/superfish.min.js',
                 'app/scripts/hoverIntent.js',
+=======
+                'app/scripts/jquery-1.11.1.js',
+                'app/scripts/bootstrap.js',
+                'app/scripts/respond.src.js',
+                'app/scripts/underscore.js'
+>>>>>>> 98dae7352e4b3c61313545560381f5970b253a1d
             ),
             'output_filename': 'app/scripts/app-layout.min.js',
         },
+        'app-readme': {
+            'source_filenames': (
+                'app/scripts/marked.min.js',
+                'app/scripts/jquery.gh-readme.js'
+            ),
+            'output_filename': 'app/scripts/app-readme.min.js',
+        },
         'blast-results': {
             'source_filenames': (
-                'blast/scripts/chroma.min.js',
+                'blast/scripts/chroma.js',
                 'blast/scripts/codemirror-compressed.js',
                 'blast/scripts/kendo-hotdogee.js',
-                'blast/scripts/jquery-ui.min.js',
+                'blast/scripts/jquery-ui.js',
                 'blast/scripts/dragscrollable.js',
                 'blast/dataTables/js/jquery.dataTables-hotdogee.js',
                 'blast/dataTables/js/dataTables.scroller.js',
-                'blast/dataTables/js/dataTables.colReorder.min.js',
-                'blast/dataTables/js/dataTables.tableTools.min.js',
+                'blast/dataTables/js/dataTables.colReorder.js',
+                'blast/dataTables/js/dataTables.tableTools.js',
                 'blast/dataTables/js/dataTables.bootstrap.js',
-                'blast/scripts/underscore-min.js',
-                'blast/scripts/backbone-min.js',
+                'blast/scripts/backbone.js',
                 'blast/scripts/scribl.1.1.5-hotdogee.js',
                 'blast/scripts/bootstrap-select-hotdogee.js',
-                'blast/scripts/bootstrap-switch.min.js',
+                'blast/scripts/bootstrap-switch.js',
                 'blast/scripts/blast-results.js',
             ),
             'output_filename': 'blast/scripts/blast-results.min.js',
         },
         'blast-js': {
             'source_filenames': (
-                'blast/scripts/underscore-min.js',
-                'blast/scripts/jquery.hoverIntent.minified.js',
-                'blast/scripts/jquery.validate.min.js',
+                'blast/scripts/jquery.hoverIntent.js',
+                'blast/scripts/jquery.validate.js',
                 'blast/scripts/blast-multi.js',
             ),
             'output_filename': 'blast/scripts/blast-js.min.js',
         },
         'clustal-js': {
             'source_filenames': (
-                'clustal/scripts/underscore-min.js',
-                'clustal/scripts/jquery.hoverIntent.minified.js',
-                'clustal/scripts/jquery.validate.min.js',
+                'clustal/scripts/jquery.hoverIntent.js',
+                'clustal/scripts/jquery.validate.js',
                 'clustal/scripts/clustal-multi.js',
             ),
             'output_filename': 'clustal/scripts/clustal-js.min.js',
         },
         'hmmer-js': {
             'source_filenames': (
-                'hmmer/scripts/underscore-min.js',
-                'hmmer/scripts/jquery.hoverIntent.minified.js',
-                'hmmer/scripts/jquery.validate.min.js',
+                'hmmer/scripts/jquery.hoverIntent.js',
+                'hmmer/scripts/jquery.validate.js',
                 'hmmer/scripts/hmmer-multi.js',
             ),
             'output_filename': 'hmmer/scripts/hmmer-js.min.js',
@@ -470,18 +439,12 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-# captcha
-CAPTCHA_LETTER_ROTATION = None
-CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
-CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_dots',)
 
 try:
     HOSTNAME = socket.gethostname()
 except:
     HOSTNAME = 'localhost'
 
-LOGIN_ENABLED = False
-ANALYTICS_ENABLED = False
 
 # Use settings for production
 USE_PROD_SETTINGS = False

@@ -308,8 +308,7 @@ $(function () { // document ready
             $blastdb_td.children().tooltip();
         }
     });
-    var results_table_api = $results_table.api(); // $('#results-table').DataTable()
-    //results_table_api.columns.adjust().draw();
+    var results_table_api = $results_table.api();
     ///////////////////
     // Download Menu //
     ///////////////////
@@ -323,7 +322,6 @@ $(function () { // document ready
     <li><a href="' + task_path + '.3"><span class="glyphicon glyphicon-file"></span> Flat query-anchored, show identities</a></li>\
     <li><a href="' + task_path + '.xml"><span class="glyphicon glyphicon-file"></span> XML</a></li>\
     <li><a href="' + task_path + '.tsv"><span class="glyphicon glyphicon-file"></span> Tabular</a></li>\
-    <li><a href="' + task_path + '.csv"><span class="glyphicon glyphicon-file"></span> CSV</a></li>\
     <li><a href="' + task_path + '.asn"><span class="glyphicon glyphicon-file"></span> BLAST archive format (ASN.1)</a></li>\
 </ul>')
     ///////////////////
@@ -359,7 +357,6 @@ $(function () { // document ready
             });
             select.selectpicker();
         } else if (title == 'evalue') {
-            //var is_last_col = i == col_idx.length - 1;
             // use log slider for evalue
             var data = results_table_api.column(i).data();
             var min = _.min(data);
@@ -763,7 +760,7 @@ $(function () { // document ready
         renderAlignmentGraph('query-canvas', focus_row_index);
         renderAlignmentGraph('subject-canvas', focus_row_index);
     });
-        
+
     /////////////////////
     // Alignment Graph //
     /////////////////////
@@ -941,8 +938,8 @@ $(function () { // document ready
                 return c[0];
             })
             /*
-    linear-gradient(60deg, rgba(30,87,153,1) 0%,rgba(0,0,0,0) 100%), 
-    linear-gradient(120deg, rgba(131,179,211,1) 0%,rgba(0,0,0,0) 100%), 
+    linear-gradient(60deg, rgba(30,87,153,1) 0%,rgba(0,0,0,0) 100%),
+    linear-gradient(120deg, rgba(131,179,211,1) 0%,rgba(0,0,0,0) 100%),
     linear-gradient(60deg, rgba(0,0,0,0) 0%,rgba(136,216,144,1) 100%),
     linear-gradient(120deg, rgba(0,0,0,0) 0%,rgba(0,109,7,1) 100%);
              */
@@ -1017,7 +1014,7 @@ $(function () { // document ready
         chart.laneSizes = 20;
         chart.laneBuffer = 0;
         chart.trackBuffer = 0;
-        // Change text color		
+        // Change text color
         chart.glyph.text.color = 'white';
 
         var focus_row_data = results_table_api.row(focus_row_index).data();

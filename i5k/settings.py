@@ -356,9 +356,9 @@ PIPELINE = {
         },
         'app-layout': {
             'source_filenames': (
+                'app/scripts/jquery.js',
                 'app/scripts/superfish.min.js',
                 'app/scripts/hoverIntent.js',
-                'app/scripts/jquery.js',
                 'app/scripts/bootstrap.js',
                 'app/scripts/respond.src.js',
                 'app/scripts/underscore.js',

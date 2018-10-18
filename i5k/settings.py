@@ -363,6 +363,7 @@ PIPELINE = {
                 'app/scripts/respond.src.js',
                 'app/scripts/underscore.js',
                 'app/scripts/error.js',
+                'app/scripts/Universal-Federated-Analytics-Min.js',
             ),
             'output_filename': 'app/scripts/app-layout.min.js',
         },

@@ -45,6 +45,6 @@
     "underscore": "^1.7.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1",
-    "Universal-Federated-Analytics-Min.js": "digital-analytics-program/gov-wide-code#master",
+    "Universal-Federated-Analytics-Min.js": "https://github.com/digital-analytics-program/gov-wide-code/archive/master.zip"
   }
 }

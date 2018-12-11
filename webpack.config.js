@@ -22,6 +22,7 @@ const appScriptConfig = {
         { from: path.join(nodeModules, '/bootstrap/dist/js/bootstrap.js'), to: appScripts},
         { from: path.join(nodeModules, '/underscore/underscore.js'), to: appScripts},
         { from: path.join(nodeModules, '/Respond.js/dest/respond.src.js'), to: appScripts},
+        { from: path.join(nodeModules, '/digital-analytics-program/Universal-Federated-Analytics-Min.js'), to: appScripts},
         { from: path.join(nodeModules, '/bootstrap/dist/css/bootstrap.css'), to: appStyles},
         { from: path.join(nodeModules, '/bootstrap/dist/css/bootstrap.css.map'), to: appStyles},
         { from: path.join(nodeModules, '/bootstrap/dist/fonts/glyphicons-halflings-regular.eot'), to: appFonts},
